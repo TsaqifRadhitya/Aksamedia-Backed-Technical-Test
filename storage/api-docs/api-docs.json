@@ -1,0 +1,714 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Technical Test Backend Aksamedia",
+        "description": "API Documentation for Technical Test Backend Aksamedia",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://aksamedia-backed.laravel.cloud",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Masuk ke dalam aplikasi",
+                "description": "Menukarkan username dan password dengan token Bearer.",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login Berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|AbCdEf..."
+                                                },
+                                                "admin": {
+                                                    "$ref": "#/components/schemas/UserResource"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Gagal Autentikasi / Credential Salah",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "unauthenticated"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "username": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "invalid credential"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Keluar dari aplikasi",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout Berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "logout success"
+                                        },
+                                        "data": {
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/divisions": {
+            "get": {
+                "tags": [
+                    "Master Data"
+                ],
+                "summary": "Ambil daftar divisi",
+                "description": "Mengambil data divisi dengan fitur pagination dan pencarian.",
+                "operationId": "getDivisions",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman yang ingin ditampilkan",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "description": "Jumlah data per halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Kata kunci pencarian nama divisi",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "divisions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/DivisionResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "pagination": {
+                                            "description": "Metadata Pagination",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 50
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employees": {
+            "get": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Ambil daftar pegawai",
+                "operationId": "getEmployees",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "perpage",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Filter nama",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "division_id",
+                        "in": "query",
+                        "description": "Filter divisi ID",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "employees": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/EmployeeResource"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "pagination": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Tambah pegawai baru",
+                "operationId": "storeEmployee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/employees/{id}": {
+            "get": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Detail pegawai",
+                "operationId": "showEmployee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/EmployeeResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Update pegawai",
+                "description": "Gunakan method POST dengan field '_method' = 'PUT' untuk update data yang mengandung file gambar.",
+                "operationId": "updateEmployee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EmployeeResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Hapus pegawai",
+                "operationId": "deleteEmployee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Ambil profil user yang sedang login",
+                "description": "Mengembalikan detail data user berdasarkan token Bearer yang dikirim.",
+                "operationId": "getProfile",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data profil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User profile retrieved"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated / Token Invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EmployeeRequest": {
+                "title": "Employee Request",
+                "description": "Format input untuk create/update pegawai (Multipart/Form-Data)",
+                "properties": {
+                    "image": {
+                        "description": "File foto pegawai (jpg, png, max 2MB)",
+                        "type": "string",
+                        "format": "binary"
+                    },
+                    "name": {
+                        "description": "Nama Lengkap Pegawai",
+                        "type": "string",
+                        "example": "Budi Santoso"
+                    },
+                    "phone": {
+                        "description": "Nomor Telepon (Unik)",
+                        "type": "string",
+                        "example": "081234567890"
+                    },
+                    "division": {
+                        "description": "UUID Divisi",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "98a7s6d5-4f3g-2h1j-..."
+                    },
+                    "position": {
+                        "description": "Jabatan",
+                        "type": "string",
+                        "example": "Staff IT"
+                    },
+                    "_method": {
+                        "description": "Wajib diisi 'PUT' hanya saat update data dengan file gambar",
+                        "type": "string",
+                        "example": "PUT"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "title": "Login Request",
+                "description": "Body request untuk login",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "username": {
+                        "description": "Username pengguna",
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "password": {
+                        "description": "Password pengguna",
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 8,
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "UserResource": {
+                "title": "User Resource",
+                "description": "Schema data user/admin",
+                "properties": {
+                    "id": {
+                        "description": "ID User",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "98a7s6d5-..."
+                    },
+                    "name": {
+                        "description": "Nama Lengkap",
+                        "type": "string",
+                        "example": "Administrator"
+                    },
+                    "username": {
+                        "description": "Username Login",
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "phone": {
+                        "description": "Nomor Telepon",
+                        "type": "string",
+                        "example": "08123456789"
+                    },
+                    "email": {
+                        "description": "Email User",
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@aksamedia.com"
+                    }
+                },
+                "type": "object"
+            },
+            "DivisionResource": {
+                "title": "Division Resource",
+                "description": "Schema data untuk object Divisi",
+                "properties": {
+                    "id": {
+                        "description": "ID Divisi",
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "98a7s6d5-4f3g-2h1j-..."
+                    },
+                    "name": {
+                        "description": "Nama Divisi",
+                        "type": "string",
+                        "example": "Mobile Development"
+                    }
+                },
+                "type": "object"
+            },
+            "EmployeeResource": {
+                "title": "Employee Resource",
+                "description": "Schema output data pegawai",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "uuid-1234"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "http://domain.com/storage/uploads/foto.jpg"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Budi Santoso"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "08123456789"
+                    },
+                    "division": {
+                        "$ref": "#/components/schemas/DivisionResource"
+                    },
+                    "position": {
+                        "type": "string",
+                        "example": "Staff IT"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter token in format (Bearer <token>)",
+                "bearerFormat": "Sanctum",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Master Data",
+            "description": "Master Data"
+        },
+        {
+            "name": "Employees",
+            "description": "Employees"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        }
+    ]
+}

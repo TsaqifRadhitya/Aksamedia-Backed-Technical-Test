@@ -3,8 +3,30 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: "LoginRequest",
+    title: "Login Request",
+    description: "Body request untuk login",
+    required: ["username", "password"],
+    properties: [
+        new OA\Property(
+            property: "username",
+            type: "string",
+            example: "admin",
+            description: "Username pengguna"
+        ),
+        new OA\Property(
+            property: "password",
+            type: "string",
+            format: "password",
+            minLength: 8,
+            example: "password123",
+            description: "Password pengguna"
+        )
+    ]
+)]
 class LoginRequest extends FormRequest
 {
     /**

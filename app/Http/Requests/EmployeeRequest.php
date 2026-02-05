@@ -4,7 +4,52 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: "EmployeeRequest",
+    title: "Employee Request",
+    description: "Format input untuk create/update pegawai (Multipart/Form-Data)",
+    properties: [
+        new OA\Property(
+            property: "image",
+            description: "File foto pegawai (jpg, png, max 2MB)",
+            type: "string",
+            format: "binary"
+        ),
+        new OA\Property(
+            property: "name",
+            description: "Nama Lengkap Pegawai",
+            type: "string",
+            example: "Budi Santoso"
+        ),
+        new OA\Property(
+            property: "phone",
+            description: "Nomor Telepon (Unik)",
+            type: "string",
+            example: "081234567890"
+        ),
+        new OA\Property(
+            property: "division",
+            description: "UUID Divisi",
+            type: "string",
+            format: "uuid",
+            example: "98a7s6d5-4f3g-2h1j-..."
+        ),
+        new OA\Property(
+            property: "position",
+            description: "Jabatan",
+            type: "string",
+            example: "Staff IT"
+        ),
+        new OA\Property(
+            property: "_method",
+            description: "Wajib diisi 'PUT' hanya saat update data dengan file gambar",
+            type: "string",
+            example: "PUT"
+        )
+    ]
+)]
 class EmployeeRequest extends FormRequest
 {
     /**
