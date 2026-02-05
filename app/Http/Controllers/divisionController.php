@@ -16,8 +16,8 @@ class divisionController extends Controller
     }
 
     public function index(Request $request){
-        $page = $request->page;
-        $perpage = $request->perpage;
+        $page = $request->query('page',1);
+        $perpage = $request->query('perpage',10);
         $search = $request->search;
         $data = $this->divisionService->getAllDivision($page,$perpage,$search);
         return ApiResponse::success([
