@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Helpers\Pagination;
 use App\Http\Requests\EmployeeRequest;
+use App\Http\Resources\employee;
 use App\Http\Services\EmployeeService;
 
 class employeeController extends Controller
@@ -35,11 +36,21 @@ class employeeController extends Controller
     }
 
     public function store(EmployeeRequest $request){
-
+        $data = $request->validated();
+        $file = $request->file('image');
+        $newEmployeeData =  $this->employeeService->createData($data,$file);
+        return ApiResponse::success(new employee($newEmployeeData),null,'created',201);
     }
 
-    public function update(EmployeeRequest $request){
+    public function update(EmployeeRequest $request,string $id){
+        $data = $request->validated();
+        $file = $request->file('image');
+        $updatedEmployeeData =  $this->employeeService->updateData($id,$data,$file);
+        if(!$updatedEmployeeData){
+            return ApiResponse::error(null,"not found",404);
+        }
 
+        return ApiResponse::success(new employee($updatedEmployeeData),null,'created',201);
     }
 
     public function destroy(EmployeeRequest $request,string $id){
