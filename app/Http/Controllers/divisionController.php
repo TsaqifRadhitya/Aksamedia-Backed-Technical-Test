@@ -50,7 +50,7 @@ class divisionController extends Controller
         description: "Data berhasil diambil",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "message", type: "string", example: "Data retrieved successfully"),
                 new OA\Property(
                     property: "data",
@@ -74,6 +74,16 @@ class divisionController extends Controller
                         new OA\Property(property: "total", type: "integer", example: 50)
                     ]
                 )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
             ]
         )
     )]

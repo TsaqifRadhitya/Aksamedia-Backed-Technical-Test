@@ -36,7 +36,7 @@ class authController extends Controller
         description: "Login Berhasil",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "message", type: "string", example: "Login successful"),
                 new OA\Property(
                     property: "data",
@@ -57,7 +57,7 @@ class authController extends Controller
         description: "Gagal Autentikasi / Credential Salah",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "error"),
+                new OA\Property(property: "status", type: "integer", example: 401),
                 new OA\Property(property: "message", type: "string", example: "unauthenticated"),
                 new OA\Property(
                     property: "errors",
@@ -87,7 +87,7 @@ class authController extends Controller
         ]);
     }
 
-    #[OA\Post(
+    #[OA\Delete(
         path: "/api/logout",
         operationId: "logout",
         summary: "Keluar dari aplikasi",
@@ -99,9 +99,19 @@ class authController extends Controller
         description: "Logout Berhasil",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "message", type: "string", example: "logout success"),
                 new OA\Property(property: "data", example: null)
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
             ]
         )
     )]

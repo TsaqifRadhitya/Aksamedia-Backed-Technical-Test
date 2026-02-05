@@ -30,7 +30,7 @@ class userController extends Controller
         description: "Berhasil mengambil data profil",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "message", type: "string", example: "User profile retrieved"),
                 new OA\Property(
                     property: "data",
@@ -44,7 +44,7 @@ class userController extends Controller
         description: "Unauthenticated / Token Invalid",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "error"),
+                new OA\Property(property: "status", type: "integer", example: 401),
                 new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
             ]
         )

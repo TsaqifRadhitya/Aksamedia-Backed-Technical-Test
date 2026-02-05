@@ -33,7 +33,7 @@ class employeeController extends Controller
         description: "Success",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "data", type: "object", properties: [
                     new OA\Property(
                         property: "employees",
@@ -42,6 +42,16 @@ class employeeController extends Controller
                     )
                 ]),
                 new OA\Property(property: "pagination", type: "object")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
             ]
         )
     )]
@@ -69,8 +79,28 @@ class employeeController extends Controller
         description: "Success",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "status", type: "string", example: "success"),
+                new OA\Property(property: "status", type: "integer", example: 200),
                 new OA\Property(property: "data", ref: "#/components/schemas/EmployeeResource")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 404,
+        description: "Data Not Found",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 404),
+                new OA\Property(property: "message", type: "string", example: "not found")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
             ]
         )
     )]
@@ -102,6 +132,16 @@ class employeeController extends Controller
         description: "Created",
         content: new OA\JsonContent(ref: "#/components/schemas/EmployeeResource")
     )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
+            ]
+        )
+    )]
     public function store(EmployeeRequest $request){
         $data = $request->validated();
         $file = $request->file('image');
@@ -109,7 +149,7 @@ class employeeController extends Controller
         return ApiResponse::success(new employee($newEmployeeData),null,'created',201);
     }
 
-    #[OA\Post(
+    #[OA\Put(
         path: "/api/employees/{id}",
         operationId: "updateEmployee",
         summary: "Update pegawai",
@@ -130,6 +170,26 @@ class employeeController extends Controller
         description: "Updated",
         content: new OA\JsonContent(ref: "#/components/schemas/EmployeeResource")
     )]
+    #[OA\Response(
+        response: 404,
+        description: "Data Not Found",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 404),
+                new OA\Property(property: "message", type: "string", example: "not found")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
+            ]
+        )
+    )]
     public function update(EmployeeRequest $request,string $id){
         $data = $request->validated();
         $file = $request->file('image');
@@ -149,8 +209,36 @@ class employeeController extends Controller
         security: [["bearerAuth" => []]]
     )]
     #[OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "string", format: "uuid"))]
-    #[OA\Response(response: 204, description: "No Content")]
-    #[OA\Response(response: 404, description: "Not Found")]
+    #[OA\Response(
+        response: 204,
+        description: "Succes Delete Data",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 204),
+                new OA\Property(property: "message", type: "string", example: "No Content")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 404,
+        description: "Data Not Found",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 404),
+                new OA\Property(property: "message", type: "string", example: "not found")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Unauthenticated / Token Invalid",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 401),
+                new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
+            ]
+        )
+    )]
     public function destroy(EmployeeRequest $request,string $id){
         if(!$this->employeeService->deleteData($id)){
             return ApiResponse::error(null,"not found",404);
