@@ -1,7 +1,9 @@
-<?
+<?php
 
-Class ApiRespone {
-    public static function success($status = 200,$data = null,$message = "Ok"){
+namespace App\Helpers;
+
+Class ApiResponse {
+    public static function success($data = null,$message = "Ok",$status = 200){
         $response = [
             'status' => $status,
             'message' => $message
@@ -9,7 +11,7 @@ Class ApiRespone {
         return response()->json($data ? [...$response,'data' => $data] : $response,$status);
     }
 
-    public static function error($status = 500,$error = null,$message = "Internal Server Error"){
+    public static function error($error = null,$message = "Internal Server Error",$status = 500){
         $response = [
             'status' => $status,
             'message' => $message
