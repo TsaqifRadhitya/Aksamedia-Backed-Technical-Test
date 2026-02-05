@@ -25,7 +25,9 @@ class authController extends Controller
             $credential = $this->authService->login($validated['username'],$validated['password']);
 
             if(!$credential){
-                return ApiResponse::error(null,'unautenticated','401');
+                return ApiResponse::error([
+                    'username' => ['invalid credential']
+                ],'unautenticated','401');
             }
             return ApiResponse::success([
                 'token' => $credential['token'],
