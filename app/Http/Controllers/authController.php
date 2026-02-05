@@ -41,6 +41,6 @@ class authController extends Controller
     public function logout(Request $request){
         $user = $request->user();
         $this->authService->logout($user);
-        return ApiResponse::success(null,'logout success');
+        return ApiResponse::success(null,null, 'logout success');
     }
 }
