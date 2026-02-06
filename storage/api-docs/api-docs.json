@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://aksamedia-backed.laravel.cloud",
+            "url": "http://127.0.0.1:8000",
             "description": "API Server"
         }
     ],
@@ -716,6 +716,80 @@
                 ]
             }
         },
+        "/api/nilaiRT": {
+            "get": {
+                "tags": [
+                    "Nilai"
+                ],
+                "summary": "Get Nilai RT Siswa",
+                "description": "Mengambil daftar nilai RT seluruh siswa berdasarkan materi_uji_id = 7",
+                "operationId": "43d652f27ebd6918b2c35e491f7f6e88",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "nama": {
+                                                        "type": "string",
+                                                        "example": "Ahmad Fadlan"
+                                                    },
+                                                    "nisn": {
+                                                        "type": "string",
+                                                        "example": "3097012709"
+                                                    },
+                                                    "nilaiRt": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "example": [
+                                                                {
+                                                                    "artistic": 5
+                                                                },
+                                                                {
+                                                                    "conventional": 4
+                                                                },
+                                                                {
+                                                                    "enterprising": 2
+                                                                },
+                                                                {
+                                                                    "investigative": 3
+                                                                },
+                                                                {
+                                                                    "realistic": 5
+                                                                },
+                                                                {
+                                                                    "social": 1
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/user": {
             "get": {
                 "tags": [
@@ -945,6 +1019,10 @@
         {
             "name": "Employees",
             "description": "Employees"
+        },
+        {
+            "name": "Nilai",
+            "description": "Nilai"
         },
         {
             "name": "User",

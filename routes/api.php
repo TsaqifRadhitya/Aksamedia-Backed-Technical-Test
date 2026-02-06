@@ -3,6 +3,7 @@
 use App\Http\Controllers\authController;
 use App\Http\Controllers\divisionController;
 use App\Http\Controllers\employeeController;
+use App\Http\Controllers\sqlController;
 use App\Http\Controllers\userController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,7 @@ Route::prefix('/employees')->middleware('auth:sanctum')->name('employees.')->gro
     Route::put("/{id}",[employeeController::class,'update'])->name('update');
     Route::delete("/{id}",[employeeController::class,'destroy'])->name('destroy');
 });
+
+Route::get("/nilaiRT",[sqlController::class,'nilaiRT']);
+
+Route::get("/nilaiST",[sqlController::class,'nilaiST']);

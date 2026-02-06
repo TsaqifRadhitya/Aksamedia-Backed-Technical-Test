@@ -9,7 +9,8 @@ use OpenApi\Attributes as OA;
     description: "API Documentation for Technical Test Backend Aksamedia"
 )]
 #[OA\Server(
-    url: "https://aksamedia-backed.laravel.cloud",
+    // url: "https://aksamedia-backed.laravel.cloud",
+    url: "http://127.0.0.1:8000",
     description: "API Server"
 )]
 #[OA\SecurityScheme(
