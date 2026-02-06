@@ -755,27 +755,93 @@
                                                         "type": "array",
                                                         "items": {
                                                             "type": "object",
-                                                            "example": [
-                                                                {
-                                                                    "artistic": 5
-                                                                },
-                                                                {
-                                                                    "conventional": 4
-                                                                },
-                                                                {
-                                                                    "enterprising": 2
-                                                                },
-                                                                {
-                                                                    "investigative": 3
-                                                                },
-                                                                {
-                                                                    "realistic": 5
-                                                                },
-                                                                {
-                                                                    "social": 1
-                                                                }
-                                                            ]
+                                                            "example": {
+                                                                "artistic": 5,
+                                                                "conventional": 4,
+                                                                "enterprising": 2,
+                                                                "investigative": 3,
+                                                                "realistic": 5,
+                                                                "social": 1
+                                                            }
                                                         }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/nilaiST": {
+            "get": {
+                "tags": [
+                    "Nilai"
+                ],
+                "summary": "Get Nilai ST Siswa",
+                "description": "Mengambil daftar nilai ST seluruh siswa berdasarkan materi_uji_id = 4, dihitung berdasarkan bobot masing-masing pelajaran dan diurutkan dari total terbesar",
+                "operationId": "d3cf2bc7f83ba944e0f5a06700bfaf77",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "nama": {
+                                                        "type": "string",
+                                                        "example": "Muhammad Sanusi"
+                                                    },
+                                                    "nisn": {
+                                                        "type": "string",
+                                                        "example": "0094494403"
+                                                    },
+                                                    "listNilai": {
+                                                        "properties": {
+                                                            "verbal": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 208.35
+                                                            },
+                                                            "kuantitatif": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 89.01
+                                                            },
+                                                            "penalaran": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 200
+                                                            },
+                                                            "figural": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 142.86
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "total": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 640.22
                                                     }
                                                 },
                                                 "type": "object"

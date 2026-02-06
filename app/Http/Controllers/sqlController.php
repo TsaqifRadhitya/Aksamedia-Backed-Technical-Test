@@ -54,12 +54,12 @@ class sqlController extends Controller
                                     items: new OA\Items(
                                         type: "object",
                                         example: [
-                                            ['artistic' => 5],
-                                            ['conventional' => 4],
-                                            ['enterprising' => 2],
-                                            ['investigative' => 3],
-                                            ['realistic' => 5],
-                                            ['social' => 1]
+                                            'artistic' => 5,
+                                            'conventional' => 4,
+                                            'enterprising' => 2,
+                                            'investigative' => 3,
+                                            'realistic' => 5,
+                                            'social' => 1
                                         ]
                                     )
                                     )
@@ -72,39 +72,154 @@ class sqlController extends Controller
         ]
     )]
     public function nilaiRT(){
-        $list_siswa = collect(DB::select('select nisn,nama from nilai group by nisn, nama'));
-        $data = [];
-        foreach($list_siswa as $siswa){
-            $siswaScore = collect(DB::select('select nama_pelajaran, skor from nilai where nisn = '.$siswa->nisn." and materi_uji_id = 7 and nama_pelajaran != 'PELAJARAN KHUSUS' order by nama_pelajaran"));
-            $nilaiRt = [];
-            foreach($siswaScore as $Score){
-                $nilaiRt = [...$nilaiRt,[Str::lower($Score->nama_pelajaran) => (int)$Score->skor]];
-            }
-            $data = [...$data,[
-                'nama' => $siswa->nama,
-                'nilaiRt' => $nilaiRt,
-                'nisn' => $siswa->nisn
-            ]];
-        }
+        $rows = DB::select("
+            SELECT nisn, nama, nama_pelajaran, skor
+            FROM nilai
+            WHERE materi_uji_id = 7
+            AND nama_pelajaran != 'PELAJARAN KHUSUS'
+            ORDER BY nama, nama_pelajaran");
+
+        $grouped = collect($rows)->groupBy('nisn');
+
+        $data = $grouped->map(function ($items) {
+
+        $first = $items->first();
+
+        $nilaiRt = $items->mapWithKeys(function ($item) {
+            return [
+                Str::lower($item->nama_pelajaran) => (int) $item->skor
+            ];
+        });
+
+        return [
+            'nama' => $first->nama,
+            'nilaiRt' => $nilaiRt,
+            'nisn' => $first->nisn,
+            ];
+        })->values();
         return ApiResponse::success($data);
     }
 
+    #[OA\Get(
+    path: "/api/nilaiST",
+    summary: "Get Nilai ST Siswa",
+    description: "Mengambil daftar nilai ST seluruh siswa berdasarkan materi_uji_id = 4, dihitung berdasarkan bobot masing-masing pelajaran dan diurutkan dari total terbesar",
+    tags: ["Nilai"],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Success",
+            content: new OA\JsonContent(
+                type: "object",
+                properties: [
+                    new OA\Property(
+                        property: "status",
+                        type: "integer",
+                        example: 200
+                    ),
+                    new OA\Property(
+                        property: "message",
+                        type: "string",
+                        example: "ok"
+                    ),
+                    new OA\Property(
+                        property: "data",
+                        type: "array",
+                        items: new OA\Items(
+                            type: "object",
+                            properties: [
+                                new OA\Property(
+                                    property: "nama",
+                                    type: "string",
+                                    example: "Muhammad Sanusi"
+                                ),
+                                new OA\Property(
+                                    property: "nisn",
+                                    type: "string",
+                                    example: "0094494403"
+                                ),
+                                new OA\Property(
+                                    property: "listNilai",
+                                    type: "object",
+                                    properties: [
+                                        new OA\Property(
+                                            property: "verbal",
+                                            type: "number",
+                                            format: "float",
+                                            example: 208.35
+                                        ),
+                                        new OA\Property(
+                                            property: "kuantitatif",
+                                            type: "number",
+                                            format: "float",
+                                            example: 89.01
+                                        ),
+                                        new OA\Property(
+                                            property: "penalaran",
+                                            type: "number",
+                                            format: "float",
+                                            example: 200
+                                        ),
+                                        new OA\Property(
+                                            property: "figural",
+                                            type: "number",
+                                            format: "float",
+                                            example: 142.86
+                                        )
+                                    ]
+                                ),
+                                new OA\Property(
+                                    property: "total",
+                                    type: "number",
+                                    format: "float",
+                                    example: 640.22
+                                    )
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function nilaiST(){
-        $list_siswa = collect(DB::select('select nisn,nama from nilai group by nisn, nama'));
-        $data = [];
-        foreach($list_siswa as $siswa){
-            $siswaScore = collect(DB::select('select nama_pelajaran, skor from nilai where nisn = '.$siswa->nisn." and materi_uji_id = 4 order by nama_pelajaran"));
-            $nilaiRt = [];
-            foreach($siswaScore as $Score){
-                $nilaiRt = [...$nilaiRt,[Str::lower($Score->nama_pelajaran) => $Score->skor]];
-            }
-            $data = [...$data,[
-                'nama' => $siswa->nama,
-                'nilaiRt' => $nilaiRt,
-                'nisn' => $siswa->nisn
-            ]];
-        }
-        return ApiResponse::success($data);
-        return ApiResponse::success([]);
+        $data = DB::select("
+            SELECT
+                nisn,
+                nama,
+                SUM(
+                    CASE
+                        WHEN pelajaran_id = 44 THEN skor * 41.67
+                        WHEN pelajaran_id = 45 THEN skor * 29.67
+                        WHEN pelajaran_id = 46 THEN skor * 100
+                        WHEN pelajaran_id = 47 THEN skor * 23.81
+                        ELSE 0
+                    END
+                ) as total,
+                SUM(CASE WHEN pelajaran_id = 44 THEN skor * 41.67 ELSE 0 END) as verbal,
+                SUM(CASE WHEN pelajaran_id = 45 THEN skor * 29.67 ELSE 0 END) as kuantitatif,
+                SUM(CASE WHEN pelajaran_id = 46 THEN skor * 100 ELSE 0 END) as penalaran,
+                SUM(CASE WHEN pelajaran_id = 47 THEN skor * 23.81 ELSE 0 END) as figural
+            FROM nilai
+            WHERE materi_uji_id = 4
+            GROUP BY nisn, nama
+            ORDER BY total DESC
+        ");
+
+        $mappedData = collect($data)->map(function($dm){
+            return [
+                'listNilai' => [
+                    'figural' => (float) $dm->figural,
+                    'kuantitatif' => (float) $dm->kuantitatif,
+                    'penalaran' => (float) $dm->penalaran,
+                    'verbal' => (float) $dm->verbal
+                ],
+                'nama' => $dm->nama,
+                'nisn' => $dm->nisn,
+                'total' => (float) $dm->total
+            ];
+        });
+
+        return ApiResponse::success($mappedData);
     }
 }
