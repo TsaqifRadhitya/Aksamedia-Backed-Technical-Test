@@ -127,10 +127,17 @@ class employeeController extends Controller
             schema: new OA\Schema(ref: "#/components/schemas/EmployeeRequest")
         )
     )]
+
     #[OA\Response(
         response: 201,
         description: "Created",
-        content: new OA\JsonContent(ref: "#/components/schemas/EmployeeResource")
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 201),
+                new OA\Property(property: "message", type: "string", example: "Ok."),
+                new OA\Property(property:"data", ref: "#/components/schemas/EmployeeResource")
+            ]
+        ),
     )]
     #[OA\Response(
         response: 401,
@@ -168,7 +175,13 @@ class employeeController extends Controller
     #[OA\Response(
         response: 200,
         description: "Updated",
-        content: new OA\JsonContent(ref: "#/components/schemas/EmployeeResource")
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "status", type: "integer", example: 200),
+                new OA\Property(property: "message", type: "string", example: "Ok."),
+                new OA\Property(property:"data", ref: "#/components/schemas/EmployeeResource")
+            ]
+        ),
     )]
     #[OA\Response(
         response: 404,
